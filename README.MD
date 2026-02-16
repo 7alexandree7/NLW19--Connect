@@ -19,6 +19,8 @@
 5. @fastify/cors
 6. zod
 7. fastify-type-provider-zod
+8. @fastify/swagger
+9. @fastify/swagger-ui
 
 
 ## ⚙️ Config
@@ -50,8 +52,31 @@
    ```
    POST http://localhost:3333/subscriptions
    Content-Type: application/json
-   
+
     {
         "name": "Unfast uk",
         "email": "unfastuk123@gmail.com"
    }
+
+
+## 📃 Doc API com swagger
+
+1. Utilizar o @fastify/swagger e @fastify/swagger-ui
+2. Exemplo de uso
+```
+import { fastifySwagger } from "@fastify/swagger"
+import { fastifySwaggerUi } from "@fastify/swagger-ui"
+import { jsonSchemaTransform } from "fastify-type-provider-zod"
+
+app.register(fastifySwagger, {
+    openapi: {
+        info: {
+            title: "Fastify API",
+            description: "API documentation",
+            version: "0.1.0"
+        }
+    },
+    transform: jsonSchemaTransform
+})
+
+app.register(fastifySwaggerUi, { routePrefix: "/docs" })
