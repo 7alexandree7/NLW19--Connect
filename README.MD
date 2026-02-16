@@ -80,3 +80,55 @@ app.register(fastifySwagger, {
 })
 
 app.register(fastifySwaggerUi, { routePrefix: "/docs" })
+```
+
+
+## Exemplo de rota com fastify + zod
+
+1. no server.ts
+   - const app = fastify().withTypeProvider<ZodTypeProvider>()
+   - app.register(fastifyCors, { origin: true })
+   - app.setValidatorCompiler(validatorCompiler);
+   - app.setSerializerCompiler(serializerCompiler);
+
+2. Vincular a rota
+   - app.register(subscribeToEventRoute)
+
+3. No arquivo da rota, criar uma função, recebendo um parametro (app), utilizando a tipagem FastifyPluginAsyncZod
+   - O Fastify automaticamente:
+   - Usa o validatorCompiler (Zod)
+   - Usa o serializerCompiler
+   - Aplica os tipos no request.body
+   - Aplica os tipos no reply
+   - ✔️ O que aconteceu foi:
+   -   - Você configurou o Fastify globalmente
+   -   - A rota recebe esse Fastify já configurado
+   -   - Então ela automaticamente ganha tipagem + validação
+  
+  ```
+  import { z } from "zod"
+import { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
+
+export const subscribeToEventRoute: FastifyPluginAsyncZod = async (app) => {
+
+    app.post("/subscriptions", {
+        schema: {
+            body: z.object({
+                name: z.string(),
+                email: z.email()
+            }),
+            response: {
+                201: z.object({
+                    name: z.string(),
+                    email: z.email()
+                })
+            }
+        }
+    }, async (request, reply) => {
+        const { name, email } = request.body
+
+        return reply.status(201).send({ name, email })
+    })
+}
+
+  ```
