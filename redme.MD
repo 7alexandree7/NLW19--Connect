@@ -23,4 +23,4 @@
 ## ⚙️ Config
 
 1. Configuração de cors, deixando origin: true, em ambiente de dev, para todas urls front usem a api
-2. Em produção mudar para a URL do seu front-end
+2. Em produção mudar para a nossa URL do front-end
