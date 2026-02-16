@@ -1,13 +1,25 @@
 ## 🐳 Docker
 
-1. Instalar docker descktop
-2. docker -v
-3. docker pull hello-world
-4. 4 docker info
-5. docker images
-6. docker run (image q vc quer usar)
-7. docer ps - mostra as imagens que estão rodando no momento
-8. 8 docker start
+1. Instalar `docker descktop`
+2. Verificar a instalação `docker -v`
+3. Ver informações do Docker `docker info`
+4. Baixar uma imagem de teste `docker pull hello-world`
+5. Rodar um container `docker run hello-world`
+6. Listar imagens baixadas `docker images`
+7. Ver containers em execução `docker ps`
+8. Iniciar um container parado `docker start <container_id>`
+9. 9. Utilizando Docker Compose
+   - 📄 docker-compose.yml
+     - O docker-compose.yml é um arquivo de configuração no formato YAML usado pelo Docker       Compose para definir e gerenciar aplicações com múltiplos containers.
+     - Ele permite:
+     - Definir serviços (API, banco, etc)
+     - Configurar redes
+     - Criar volumes
+     - 👉 Com um único comando você sobe tudo:
+     - `docker compose up -d`
+10. Banco de dados PostgreSQL Utilizar a imagem: `bitnami/postgresql`
+11. Banco de dados redis Utilizar a imagem: `bitnami/redis`
+12. Ver contairnes ativos final `docker ps`
 
 
 ## 📦 Dependencies
