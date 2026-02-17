@@ -34,6 +34,7 @@
 8. @fastify/swagger
 9. @fastify/swagger-ui
 10. @biomejs/biome -D
+11. ioredis
 
 
 ## ⚙️ Config
@@ -159,13 +160,16 @@ app.register(fastifySwaggerUi, { routePrefix: "/docs" })
    - Use ``` app.listen({ port: env.PORT }) ```
 
 ```
-import { z } from "zod";
+import { z } from 'zod'
 
 const envSchema = z.object({
-    PORT: z.coerce.number().default(3333)
+   PORT: z.coerce.number().default(3333),
+   POSTGRES_URL: z.url(),
+   REDIS_URL: z.url(),
 })
 
 export const env = envSchema.parse(process.env)
+
 ```
 
 
@@ -219,4 +223,18 @@ export const env = envSchema.parse(process.env)
   }
 
 }
+```
+
+
+## Redis
+
+1. Criar uma pasta redis, com um arquivo clinet.ts para fazer a conexãp
+2. Instalar a lib ioredis
+3. Conexão
+```
+import { Redis } from 'ioredis'
+import { env } from '../env'
+
+export const redis = new Redis(env.REDIS_URL)
+
 ```
