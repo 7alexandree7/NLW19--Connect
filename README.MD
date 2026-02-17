@@ -35,6 +35,9 @@
 9. @fastify/swagger-ui
 10. @biomejs/biome -D
 11. ioredis
+12. postgres
+13. drizzle-orm
+14. drizzle-kit -D
 
 
 ## ⚙️ Config
@@ -226,7 +229,7 @@ export const env = envSchema.parse(process.env)
 ```
 
 
-## Redis
+## ⚡ Redis
 
 1. Criar uma pasta redis, com um arquivo clinet.ts para fazer a conexãp
 2. Instalar a lib ioredis
@@ -236,5 +239,61 @@ import { Redis } from 'ioredis'
 import { env } from '../env'
 
 export const redis = new Redis(env.REDIS_URL)
+
+```
+
+## 🐘 PostgreSQL
+
+1. Banco de dados relacional
+2. Consultar via SQL
+3. porém utilizaremos uma orm chamda drizzle
+4. Facilitar as querys no banco, no lugar de escrever sql na mão
+5. Conexão via postgres + drizzle (orm)
+```
+import { drizzle } from 'drizzle-orm/postgres-js'
+import postgres from 'postgres'
+import { env } from '../env'
+import { subscriptions } from './schema/subscriptions'
+
+export const pg = postgres(env.POSTGRES_URL)
+export const db = drizzle(pg, {
+  schema: {
+    subscriptions,
+  },
+})
+
+
+```
+
+
+
+## 🧩 Drizzle
+
+1. é um mapeador objeto-relacional (ORM) leve e moderno, focado em TypeScript e SQL, projetado para ser intuitivo e performático
+2. Ele funciona como uma camada fina sobre o banco de dados, permitindo que os desenvolvedores escrevam consultas SQL reais e seguras (type-safe) sem a complexidade de ORMs mais pesados, oferecendo excelente suporte a dialetos como PostgreSQL, MySQL e SQLite. 
+
+3. Criação de Schemas
+   - Criar uma pasta Schema e um arquivo para cada tabela
+4. Utilizar o `pgTable` para a criação da tabela, definindo um nome como parametro, e um objeto para os elementos da tabela
+5. `.uui()` define a coluna como UUID (identificador único).
+6. `.primaryKey()` marca essa coluna como chave primária da tabela.
+7. `.defaultRandom()` gera automaticamente um UUID aleatório ao inserir um novo registro.
+8. `.notNull()` obriga que essa coluna sempre tenha valor (não pode ser null).
+9. `.unique()` garante que não existam valores repetidos nessa coluna (ex: e-mail único)
+10. `timestamp("created_at")` cria uma coluna de data/hora.
+11. `.defaultNow()` define automaticamente a data/hora atual ao criar o registro.
+
+
+```
+import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+
+export const subscriptions = pgTable('subscriptions', {
+   id: uuid('id').primaryKey().defaultRandom(),
+   name: text('name').notNull(),
+   email: text('email').notNull().unique(),
+   createdAt: timestamp("created_at").notNull().defaultNow(),
+})
+
+export type Subscription = typeof subscriptions
 
 ```
