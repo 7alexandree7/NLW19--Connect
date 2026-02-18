@@ -4,7 +4,7 @@ interface GetSubscriberInviteLinkParams {
     subscriberId: string;
 }
 
-export async function getSubscriberInviteLink({subscriberId }: GetSubscriberInviteLinkParams)  {
+export async function getSubscriberInviteClick({subscriberId }: GetSubscriberInviteLinkParams)  {
 
     const count = await redis.hget("referral:access-count", subscriberId)
 
