@@ -9,6 +9,7 @@ export async function getSubscriberInviteLink({subscriberId }: GetSubscriberInvi
     const count = await redis.hget("referral:access-count", subscriberId)
 
     return {
+        subscriberId,
         count: count ? parseInt(count) : 0
     }
 }

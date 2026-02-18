@@ -15,6 +15,7 @@ export const getSubscriberInviteLinkRoute: FastifyPluginAsyncZod = async app => 
         }),
         response: {
             200: z.object({
+                subscriberId: z.string(),
                 count: z.number(),
             }),
           },
@@ -24,8 +25,8 @@ export const getSubscriberInviteLinkRoute: FastifyPluginAsyncZod = async app => 
     async (request) => {
 
         const { subscriberId } = request.params
-        const { count } = await getSubscriberInviteLink({ subscriberId })
-        return { count }
+
+        return await getSubscriberInviteLink({ subscriberId})
     },
   )
 }
