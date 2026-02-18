@@ -5,3 +5,8 @@ Content-Type: application/json
     "name": "Unfast uk",
     "email": "unfastuk123@gmail.com"
 }
+
+
+###
+
+GET http://localhost:3333/invites/ayo123
