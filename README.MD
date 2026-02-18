@@ -38,6 +38,7 @@
 12. postgres
 13. drizzle-orm
 14. drizzle-kit -D
+15. tsup -D
 
 
 ## ⚙️ Config
@@ -491,3 +492,45 @@ export async function subscribeToEvent({name, email}: SubscriptionToEventParams)
   - Backend consulta o ranking no Redis
   - Backend retorna:
   - `position` (posição do usuário no ranking de convites)
+
+9. Ultima funcionalidade
+   - Essa funcionalidade serve para mostrar os usuários com mais indicações (ranking geral)
+   - O backend busca os 3 melhores no Redis e depois pega os dados completos no banco
+   - `redis.zrevrange(...)` → Busca os 3 primeiros do ranking (maior score primeiro) com suas
+   - `'WITHSCORES'` → Faz o Redis retornar [id, score, id, score...]
+   - `const ranking: Record<string, number>` Cria um objeto para mapear id → score
+   - `for (...)` → Percorre o array do Redis separando id e score
+   - `ranking[id] = score` → Monta o ranking em formato de objeto
+   - `Object.keys(ranking)` → Pega todos os IDs do ranking
+   - `inArray(...)` → Busca no banco apenas os usuários que estão no ranking
+   - `db.select().from(subscriptions)` → Busca os dados (nome, id) no banco
+   - `.map(...)` → Junta os dados do banco com o score do Redis
+   - `.sort(...)` → Ordena do maior score para o menor (garantia extra)
+   -  - Usuário acessa `/ranking`
+   -  Backend busca os top 3 no Redis (quem mais indicou)
+   -  Backend busca os dados desses usuários no banco
+   -  Backend retorna:
+   -  id (usuário)
+   -  name (nome do usuário)
+   -  score (quantidade de indicações)
+
+
+## 🔷 TSUP 
+1. é um empacotador (bundler) extremamente rápido, moderno e com configuração zero, ideal para bibliotecas TypeScript e JavaScript
+2. Velocidade Incrível: Utiliza o esbuild, tornando-o um dos métodos mais rápidos para empacotar bibliotecas.
+3. Configuração Zero: Funciona imediatamente sem a necessidade de arquivos de configuração complexos, ideal para projetos simples a médios.
+4. Suporte Nativo a TS/JS: Compila TypeScript e JavaScript, suportando também JSON e, de forma experimental, CSS.
+5. Múltiplos Formatos: Gera automaticamente ESM (.mjs) e CommonJS (.js) e arquivos de definição de tipo (.d.ts).
+6. Gerenciamento de Dependências: Exclui automaticamente pacotes listados em dependencies e peerDependencies do package.json, ideal para bibliotecas.
+7. Recursos Úteis: Inclui watch mode (modo de observação para desenvolvimento), minificação e tree-shaking. 
+8. Criar um arquivo `tsup.config.ts`
+```
+import { defineConfig } from 'tsup'
+
+export default defineConfig({
+   entry: ['src/**/*.{ts,tsx}'],
+   clean: true,
+   format: 'esm',
+   outDir: 'dist',
+})
+```
