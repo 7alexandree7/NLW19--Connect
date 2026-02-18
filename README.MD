@@ -261,6 +261,7 @@ export const env = envSchema.parse(process.env)
    - `redis.hget(...)` 👉 Busca o valor de um campo específico dentro de um hash no Redis
    - `redis.zincrby(...)` 👉 Incrementa a pontuação (score) de um membro em um Sorted Set (ranking)
    - `redis.zscore` 👉 Retorna a pontuação (score) atual de um membro dentro do Sorted Set
+   - `redis.zrevrank(...)` 👉 Retorna a posição do usuário no ranking (ordem decrescente)
 ```
 import { Redis } from 'ioredis'
 import { env } from '../env'
@@ -473,3 +474,20 @@ export async function subscribeToEvent({name, email}: SubscriptionToEventParams)
    - Backend consulta o ranking no Redis
    - Backend retorna:
    - count (quantidade de pessoas que se cadastraram com o link dele)
+
+
+8 Sexta funcionalidade é buscar posição no ranking (Redis)
+  - Essa funcionalidade serve para mostrar em qual posição o usuário está no ranking de convites
+  - Aqui usamos um Sorted Set (ranking) ordenado do maior para o menor
+  - `const { subscriberId } = request.params` → Pega o ID da URL
+  - `await getSubscriberRankingPosition(...)` → Chama a função que busca a posição no Redis
+  - `return { position }` → Retorna a posição do usuário no ranking
+  - `redis.zrevrank(...)` → Retorna a posição do usuário no ranking (ordem decrescente)
+  - `"referral:ranking"` → Nome do Sorted Set no Redis
+  - `subscriberId `→ Membro dentro do ranking
+  - `rank + 1` → Ajusta a posição (Redis começa do 0, então +1)
+  - `if (rank == null)` → Se não existir no ranking, retorna posição 0
+  - Usuário acessa `/subscribers/:subscriberId/ranking/position
+  - Backend consulta o ranking no Redis
+  - Backend retorna:
+  - `position` (posição do usuário no ranking de convites)
